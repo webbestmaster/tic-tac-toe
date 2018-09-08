@@ -7,6 +7,7 @@ export type GetWinnerType = {|
     +cellList: Array<ServerCellDataType>
 |};
 
+// eslint-disable-next-line complexity
 function getLine(cellList: Array<ServerCellDataType>, lineIndex: number): Array<ServerCellDataType> | null {
     switch (lineIndex) {
         case 0:
@@ -27,6 +28,7 @@ function getLine(cellList: Array<ServerCellDataType>, lineIndex: number): Array<
             return [cellList[0], cellList[4], cellList[8]];
         case 7:
             return [cellList[2], cellList[4], cellList[6]];
+
         default:
             console.error('can not find line index', lineIndex);
     }
@@ -43,13 +45,11 @@ function isNeededLine(line: Array<ServerCellDataType>, winnerType: SymbolType): 
 }
 
 export function getWinner(cellList: Array<ServerCellDataType>, winnerList: Array<SymbolType>): GetWinnerType | null {
-    let result: GetWinnerType | null = null;
+    let result = null;
 
-    const itemListList = new Array(8).fill(null).map(
-        (value: null, item: number): Array<ServerCellDataType> | null => {
-            return getLine(cellList, item);
-        }
-    );
+    const itemListList = new Array(8)
+        .fill(null)
+        .map((value: null, item: number): Array<ServerCellDataType> | null => getLine(cellList, item));
 
     winnerList.every(
         (winnerTypeInList: SymbolType): boolean => {

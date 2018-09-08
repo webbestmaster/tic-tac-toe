@@ -32,10 +32,14 @@ export async function getServerCellData(cellIndex: number): Promise<ServerCellDa
     return window
         .fetch(getServerCellDataUrl)
         .then(
-            async (response: Response): Promise<ServerCellDataType> => {
+            async (response: Response): Promise<ServerCellDataType | null> => {
                 const parsedResponse = await response.json();
 
                 console.log('---> parsed response:', parsedResponse);
+
+                if (Math.random() > 0.3) {
+                    return null;
+                }
 
                 return {
                     value: Math.random() > 0.5 ? symbolMap.tic : symbolMap.tac,
