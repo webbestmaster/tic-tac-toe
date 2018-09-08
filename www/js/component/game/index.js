@@ -14,6 +14,7 @@ import {getServerCellData, symbolMap} from './api';
 import type {ServerCellDataType, SymbolType} from './api';
 import Queue from '../../lib/queue';
 import {getWinner, isAllCellFilled} from './helper';
+import Button from '@material-ui/core/Button';
 
 type ReduxPropsType = {};
 
@@ -182,13 +183,15 @@ class Game extends Component<ReduxPropsType, PassedPropsType, StateType> {
 
         if (!isStarted) {
             return (
-                <button
+                <Button
                     onClick={(): Promise<void> => view.startGame()}
                     onKeyPress={(): Promise<void> => view.startGame()}
+                    variant="contained"
+                    color="primary"
                     type="button"
                 >
                     %start game%
-                </button>
+                </Button>
             );
         }
 
