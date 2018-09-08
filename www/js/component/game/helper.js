@@ -1,6 +1,7 @@
 // @flow
 
 import type {ServerCellDataType, SymbolType} from './api';
+import {symbolMap} from './api';
 
 export type GetWinnerType = {|
     +winner: SymbolType,
@@ -45,7 +46,7 @@ function isNeededLine(line: Array<ServerCellDataType>, winnerType: SymbolType): 
 }
 
 export function getWinner(cellList: Array<ServerCellDataType>, winnerList: Array<SymbolType>): GetWinnerType | null {
-    let result = null;
+    let result: GetWinnerType | null = null;
 
     const itemListList = new Array(8)
         .fill(null)
@@ -78,4 +79,8 @@ export function getWinner(cellList: Array<ServerCellDataType>, winnerList: Array
     );
 
     return result;
+}
+
+export function isAllCellFilled(cellList: Array<ServerCellDataType>, cellTypeList: Array<SymbolType>): boolean {
+    return cellList.every((cellInList: ServerCellDataType): boolean => cellTypeList.includes(cellInList.value));
 }

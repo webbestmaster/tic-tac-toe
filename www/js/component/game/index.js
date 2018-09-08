@@ -13,7 +13,7 @@ import style from './style.scss';
 import {getServerCellData, symbolMap} from './api';
 import type {ServerCellDataType, SymbolType} from './api';
 import Queue from '../../lib/queue';
-import {getWinner} from './helper';
+import {getWinner, isAllCellFilled} from './helper';
 
 type ReduxPropsType = {};
 
@@ -102,18 +102,23 @@ class Game extends Component<ReduxPropsType, PassedPropsType, StateType> {
 
                     view.setState({cellStateList});
 
-                    const winnerData = getWinner(cellStateList, [symbolMap.tic, symbolMap.tac]);
+                    const activeSymbolList = [symbolMap.tic, symbolMap.tac];
 
-                    if (winnerData === null) {
-                        console.log('---> NO winner');
+                    const winnerData = getWinner(cellStateList, activeSymbolList);
+
+                    if (winnerData !== null) {
+                        console.log('---> winner is:', winnerData);
+                        view.stopListenServer();
                         return;
                     }
 
-                    // check all cell is fill and show draw
+                    if (isAllCellFilled(cellStateList, activeSymbolList)) {
+                        console.log('---> DRAW');
+                        view.stopListenServer();
+                        return;
+                    }
 
-                    console.log('---> winner is:', winnerData);
-
-                    view.stopListenServer();
+                    console.log('---> no winner and battlefield is not fulfill -> game must go on');
                 }
             );
         });

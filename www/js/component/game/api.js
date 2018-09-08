@@ -37,7 +37,7 @@ export async function getServerCellData(cellIndex: number): Promise<ServerCellDa
 
                 console.log('---> parsed response:', parsedResponse);
 
-                if (Math.random() > 0.3) {
+                if (Math.random() > 0.99) {
                     return null;
                 }
 
