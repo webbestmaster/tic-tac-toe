@@ -58,7 +58,7 @@ class Game extends Component<ReduxPropsType, PassedPropsType, StateType> {
             isStarted: false,
             isListenServerStart: false,
             // did not find better way to create needed array, fix it if you can
-            cellStateList: new Array(9)
+            cellStateList: new Array(8)
                 .fill({value: symbolMap.noDefine, index: 0})
                 .map((value: ServerCellDataType, index: number): ServerCellDataType => ({...value, index}))
         };
@@ -100,18 +100,22 @@ class Game extends Component<ReduxPropsType, PassedPropsType, StateType> {
 
                     cellStateList[cellIndex] = serverCellData;
 
-                    const winnerData = getWinner<SymbolType>(cellStateList, [symbolMap.tic, symbolMap.tac]);
-
                     view.setState({cellStateList});
 
-                    if (winnerData === null) {
-                        console.log('---> NO winner');
-                        return;
-                    }
+                    const winnerData = getWinner(cellStateList, [symbolMap.tic, symbolMap.tac]);
 
-                    console.log('---> winner is:', winnerData);
+                    // view.setState({cellStateList});
 
-                    view.stopListenServer();
+                    /*
+                                        if (winnerData === null) {
+                                            console.log('---> NO winner');
+                                            return;
+                                        }
+
+                                        console.log('---> winner is:', winnerData);
+
+                                        view.stopListenServer();
+                    */
                 }
             );
         });
