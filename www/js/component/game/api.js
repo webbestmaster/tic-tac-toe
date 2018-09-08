@@ -4,9 +4,23 @@
 
 import appConst from '../../app-const';
 
+type SymbolMapType = {|
+    +tic: 'X',
+    +tac: 'O',
+    +noDefine: ''
+|};
+
 export type ServerCellDataType = {
-    +value: 'X' | 'O' | '',
+    +value: | $PropertyType<SymbolMapType, 'tic'>
+        | $PropertyType<SymbolMapType, 'tac'>
+        | $PropertyType<SymbolMapType, 'noDefine'>,
     +index: number
+};
+
+export const symbolMap: SymbolMapType = {
+    tic: 'X',
+    tac: 'O',
+    noDefine: ''
 };
 
 export async function getServerCellData(cellIndex: number): Promise<ServerCellDataType | null> {
@@ -21,7 +35,7 @@ export async function getServerCellData(cellIndex: number): Promise<ServerCellDa
                 console.log('---> parsed response:', parsedResponse);
 
                 return {
-                    value: Math.random() > 0.5 ? 'X' : 'O',
+                    value: Math.random() > 0.5 ? symbolMap.tic : symbolMap.tac,
                     index: cellIndex
                 };
             }

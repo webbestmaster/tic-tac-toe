@@ -10,8 +10,9 @@ import {connect} from 'react-redux';
 import type {GlobalStateType} from '../../app-reducer';
 import type {ContextRouterType} from '../../type/react-router-dom-v4';
 import style from './style.scss';
-import {getServerCellData} from './api';
+import {getServerCellData, symbolMap} from './api';
 import type {ServerCellDataType} from './api';
+import Queue from '../../lib/queue';
 
 type ReduxPropsType = {};
 
@@ -57,7 +58,7 @@ class Game extends Component<ReduxPropsType, PassedPropsType, StateType> {
             isListenServerStart: false,
             // did not find better way to create needed array, fix it if you can
             cellStateList: new Array(9)
-                .fill({value: '', index: 0})
+                .fill({value: symbolMap.noDefine, index: 0})
                 .map((value: ServerCellDataType, index: number): ServerCellDataType => ({...value, index}))
         };
     }
@@ -67,6 +68,39 @@ class Game extends Component<ReduxPropsType, PassedPropsType, StateType> {
         const {props, state} = view;
 
         return state.isListenServerStart;
+    }
+
+    async fetchServerCellListData(): Promise<void> {
+        const view = this;
+
+        const queue = new Queue();
+
+        const {cellStateList} = view.state;
+
+        cellStateList.forEach((cellData: ServerCellDataType, cellIndex: number) => {
+            if (cellData.value) {
+                console.log(`---> value for cellIndex: ${cellIndex} already exists, request no needed`);
+                return;
+            }
+
+            queue.push(
+                async (): Promise<void> => {
+                    const serverCellData = await getServerCellData(cellIndex);
+
+                    if (serverCellData === null) {
+                        console.error('---> Error: Can not get cell, cellIndex:', cellIndex);
+                        return;
+                    }
+
+                    cellStateList[cellIndex] = serverCellData;
+                    view.setState({cellStateList});
+                }
+            );
+        });
+
+        return new Promise((resolve: () => void) => {
+            queue.push(resolve);
+        });
     }
 
     async startListenServer(): Promise<void> {
@@ -79,33 +113,14 @@ class Game extends Component<ReduxPropsType, PassedPropsType, StateType> {
 
         view.setState(
             {isListenServerStart: true},
-            (): Promise<void> => {
+            async (): Promise<void> => {
                 async function watch(): Promise<void> {
                     if (!view.isListenServerStart()) {
                         console.log('---> server is stop');
                         return;
                     }
 
-                    const {cellStateList} = view.state;
-
-                    cellStateList.forEach(
-                        async (cellData: ServerCellDataType, cellIndex: number): Promise<void> => {
-                            if (cellData.value) {
-                                console.log(`---> value for cellIndex: ${cellIndex} already exists, request no needed`);
-                                return;
-                            }
-
-                            const serverCellData = await getServerCellData(cellIndex);
-
-                            if (serverCellData === null) {
-                                console.error('---> Error: Can not get cell, cellIndex:', cellIndex);
-                                return;
-                            }
-
-                            cellStateList[cellIndex] = serverCellData;
-                            view.setState({cellStateList});
-                        }
-                    );
+                    await view.fetchServerCellListData();
 
                     setTimeout(watch, serverListenPerion);
                 }
