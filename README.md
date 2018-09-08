@@ -1,6 +1,3 @@
-# tic-tac-toe
-Tic Tac Toe the game
-
 ## Installation:
 
 ### Install libpng-dev for pngquant:
