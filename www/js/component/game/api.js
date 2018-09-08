@@ -4,16 +4,18 @@
 
 import appConst from '../../app-const';
 
+type SymbolTicType = 'X';
+type SymbolTacType = 'O';
+type SymbolNoDefineType = '';
+
 type SymbolMapType = {|
-    +tic: 'X',
-    +tac: 'O',
-    +noDefine: ''
+    +tic: SymbolTicType,
+    +tac: SymbolTacType,
+    +noDefine: SymbolNoDefineType
 |};
 
 export type ServerCellDataType = {
-    +value: | $PropertyType<SymbolMapType, 'tic'>
-        | $PropertyType<SymbolMapType, 'tac'>
-        | $PropertyType<SymbolMapType, 'noDefine'>,
+    +value: SymbolTicType | SymbolTacType | SymbolNoDefineType,
     +index: number
 };
 
