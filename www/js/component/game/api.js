@@ -4,9 +4,10 @@
 
 import appConst from '../../app-const';
 
-type SymbolTicType = 'X';
-type SymbolTacType = 'O';
-type SymbolNoDefineType = '';
+export type SymbolTicType = 'X';
+export type SymbolTacType = 'O';
+export type SymbolNoDefineType = '';
+export type SymbolType = SymbolTicType | SymbolTacType | SymbolNoDefineType;
 
 type SymbolMapType = {|
     +tic: SymbolTicType,
@@ -15,7 +16,7 @@ type SymbolMapType = {|
 |};
 
 export type ServerCellDataType = {
-    +value: SymbolTicType | SymbolTacType | SymbolNoDefineType,
+    +value: SymbolType,
     +index: number
 };
 

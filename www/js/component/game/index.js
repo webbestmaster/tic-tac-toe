@@ -11,8 +11,9 @@ import type {GlobalStateType} from '../../app-reducer';
 import type {ContextRouterType} from '../../type/react-router-dom-v4';
 import style from './style.scss';
 import {getServerCellData, symbolMap} from './api';
-import type {ServerCellDataType} from './api';
+import type {ServerCellDataType, SymbolType} from './api';
 import Queue from '../../lib/queue';
+import {getWinner} from './helper';
 
 type ReduxPropsType = {};
 
@@ -85,6 +86,11 @@ class Game extends Component<ReduxPropsType, PassedPropsType, StateType> {
 
             queue.push(
                 async (): Promise<void> => {
+                    if (!view.isListenServerStart()) {
+                        console.log('no fetch, server listen is stop');
+                        return;
+                    }
+
                     const serverCellData = await getServerCellData(cellIndex);
 
                     if (serverCellData === null) {
@@ -93,7 +99,19 @@ class Game extends Component<ReduxPropsType, PassedPropsType, StateType> {
                     }
 
                     cellStateList[cellIndex] = serverCellData;
+
+                    const winnerData = getWinner<SymbolType>(cellStateList, [symbolMap.tic, symbolMap.tac]);
+
                     view.setState({cellStateList});
+
+                    if (winnerData === null) {
+                        console.log('---> NO winner');
+                        return;
+                    }
+
+                    console.log('---> winner is:', winnerData);
+
+                    view.stopListenServer();
                 }
             );
         });
