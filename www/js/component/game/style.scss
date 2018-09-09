@@ -7,11 +7,19 @@
     width: 33.33333%;
 }
 
-.start_button_wrapper {
+.wrapper {
     align-items: center;
     display: flex;
+    flex-direction: column;
     height: 100%;
     justify-content: center;
     position: absolute;
     width: 100%;
+}
+
+.field {
+    background-color: #0c0;
+    max-width: 512px;
+    min-width: 320px;
+    width: 50%;
 }

@@ -10,6 +10,7 @@ import {connect} from 'react-redux';
 import type {GlobalStateType} from '../../app-reducer';
 import type {ContextRouterType} from '../../type/react-router-dom-v4';
 import style from './style.scss';
+import homePageStyle from '../../page/home/style.scss';
 import {getServerCellData, symbolMap} from './api';
 import type {ServerCellDataType, SymbolType} from './api';
 import Queue from '../../lib/queue';
@@ -199,7 +200,7 @@ class Game extends Component<ReduxPropsType, PassedPropsType, StateType> {
 
         if (!isStarted) {
             return (
-                <div className={style.start_button_wrapper}>
+                <div className={style.wrapper}>
                     <Button
                         onClick={(): Promise<void> => view.startGame()}
                         onKeyPress={(): Promise<void> => view.startGame()}
@@ -214,17 +215,21 @@ class Game extends Component<ReduxPropsType, PassedPropsType, StateType> {
         }
 
         return (
-            <div>
-                {cellStateList.map(
-                    (cell: ServerCellDataType): Node => {
-                        return (
-                            <div key={cell.index} className={style.cell}>
-                                {cell.value}
-                            </div>
-                        );
-                    }
-                )}
-                <div>game result: {gameResult === '' ? '' : <Locale stringKey={gameResult}/>}</div>
+            <div className={style.wrapper}>
+                <div className={style.field}>
+                    {cellStateList.map(
+                        (cell: ServerCellDataType): Node => {
+                            return (
+                                <div key={cell.index} className={style.cell}>
+                                    {cell.value}
+                                </div>
+                            );
+                        }
+                    )}
+                </div>
+                <p className={homePageStyle.header}>
+                    {gameResult === '' ? '\u00A0' : <Locale stringKey={gameResult}/>}
+                </p>
             </div>
         );
     }
