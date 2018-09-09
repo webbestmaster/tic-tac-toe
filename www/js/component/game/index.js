@@ -1,6 +1,6 @@
 // @flow
 
-/* global setTimeout */
+/* global window, setTimeout */
 
 /* eslint consistent-this: ["error", "view"] */
 
@@ -8,9 +8,7 @@ import type {Node} from 'react';
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import type {GlobalStateType} from '../../app-reducer';
-import type {ContextRouterType} from '../../type/react-router-dom-v4';
 import style from './style.scss';
-import homePageStyle from '../../page/home/style.scss';
 import {getServerCellData, symbolMap} from './api';
 import type {ServerCellDataType, SymbolType} from './api';
 import Queue from '../../lib/queue';
@@ -202,10 +200,35 @@ class Game extends Component<ReduxPropsType, PassedPropsType, StateType> {
         await view.startListenServer();
     }
 
+    renderGameResult(): Node {
+        const view = this;
+        const {state} = view;
+        const {gameResult} = state;
+
+        if (gameResult === '') {
+            return <p className={style.game_result_p}>&nbsp;</p>;
+        }
+
+        return (
+            <button
+                type="button"
+                onClick={() => {
+                    window.location.reload();
+                }}
+                onKeyPress={() => {
+                    window.location.reload();
+                }}
+                className={style.game_result_button}
+            >
+                <Locale stringKey={gameResult}/>
+            </button>
+        );
+    }
+
     render(): Node {
         const view = this;
         const {props, state} = view;
-        const {isStarted, cellStateList, gameResult, winCellList} = state;
+        const {isStarted, cellStateList, winCellList} = state;
 
         if (!isStarted) {
             return (
@@ -232,9 +255,7 @@ class Game extends Component<ReduxPropsType, PassedPropsType, StateType> {
 
                     )}
                 </div>
-                <p className={homePageStyle.header}>
-                    {gameResult === '' ? '\u00A0' : <Locale stringKey={gameResult}/>}
-                </p>
+                {view.renderGameResult()}
             </div>
         );
     }

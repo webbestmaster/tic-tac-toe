@@ -1,4 +1,5 @@
 @import './../../../css/service';
+@import './../../page/home/style';
 
 .wrapper {
     @extend %clear-full;
@@ -18,4 +19,15 @@
     min-width: 320px;
     padding: 10px;
     width: 50%;
+}
+
+%game-result-p,
+.game_result_p {
+    @extend %header;
+}
+
+.game_result_button {
+    @extend %game-result-p;
+
+    cursor: pointer;
 }
