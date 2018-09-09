@@ -4,7 +4,7 @@ import type {ServerCellDataType, SymbolType} from './api';
 import {symbolMap} from './api';
 
 export type GetWinnerType = {|
-    +winner: SymbolType,
+    +value: SymbolType,
     +cellList: Array<ServerCellDataType>
 |};
 
@@ -70,7 +70,7 @@ export function getWinner(cellList: Array<ServerCellDataType>, winnerList: Array
             }
 
             result = {
-                winner: winnerTypeInList,
+                value: winnerTypeInList,
                 cellList: neededLine
             };
 

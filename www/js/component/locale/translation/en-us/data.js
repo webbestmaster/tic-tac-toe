@@ -9,6 +9,10 @@ export const enUs: LangDataType = {
     HEADER__TOP_TEXT: 'the blockchain technology for game development',
     BUTTON__START_GAME: 'start game',
 
+    END_GAME_RESULT__X_WIN: 'X win',
+    END_GAME_RESULT__O_WIN: 'O win',
+    END_GAME_RESULT__DRAW: 'Draw',
+
     LOGIN_POPUP__PLEASE_LOG_IN_OR_JOIN_NOW: 'Please log in or join now.',
     LOGIN_POPUP__INPUT_USERNAME: 'Username',
     LOGIN_POPUP__INPUT_PASSWORD: 'Password',

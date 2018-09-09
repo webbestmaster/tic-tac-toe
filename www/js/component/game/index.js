@@ -34,7 +34,8 @@ type PropsType = $ReadOnly<$Exact<{
 type StateType = {|
     +isStarted: boolean,
     +isListenServerStart: boolean,
-    +cellStateList: Array<ServerCellDataType>
+    +cellStateList: Array<ServerCellDataType>,
+    +gameResult: '' | 'END_GAME_RESULT__X_WIN' | 'END_GAME_RESULT__O_WIN' | 'END_GAME_RESULT__DRAW'
 |};
 
 const reduxAction: ReduxActionType = {
@@ -62,7 +63,8 @@ class Game extends Component<ReduxPropsType, PassedPropsType, StateType> {
             // did not find better way to create needed array, fix it if you can
             cellStateList: new Array(9)
                 .fill({value: symbolMap.noDefine, index: 0})
-                .map((value: ServerCellDataType, index: number): ServerCellDataType => ({...value, index}))
+                .map((value: ServerCellDataType, index: number): ServerCellDataType => ({...value, index})),
+            gameResult: ''
         };
     }
 
@@ -73,12 +75,52 @@ class Game extends Component<ReduxPropsType, PassedPropsType, StateType> {
         return state.isListenServerStart;
     }
 
+    // eslint-disable-next-line  max-statements
+    async fetchServerCellData(cellIndex: number): Promise<void> {
+        const view = this;
+        const {state} = view;
+        const {cellStateList} = state;
+
+        const serverCellData = await getServerCellData(cellIndex);
+
+        if (serverCellData === null) {
+            console.error('---> Error: Can not get cell, cellIndex:', cellIndex);
+            return;
+        }
+
+        cellStateList[cellIndex] = serverCellData;
+
+        view.setState({cellStateList});
+
+        const activeSymbolList = [symbolMap.tic, symbolMap.tac];
+
+        const winnerData = getWinner(cellStateList, activeSymbolList);
+
+        if (winnerData !== null) {
+            view.setState({
+                gameResult: winnerData.value === symbolMap.tic ? 'END_GAME_RESULT__X_WIN' : 'END_GAME_RESULT__O_WIN'
+            });
+            console.log('---> winner is:', winnerData);
+            view.stopListenServer();
+            return;
+        }
+
+        if (isAllCellFilled(cellStateList, activeSymbolList)) {
+            console.log('---> DRAW');
+            view.setState({gameResult: 'END_GAME_RESULT__DRAW'});
+            view.stopListenServer();
+            return;
+        }
+
+        console.log('---> no winner and battlefield is not fulfill -> game must go on');
+    }
+
     async fetchServerCellListData(): Promise<void> {
         const view = this;
+        const {state} = view;
+        const {cellStateList} = state;
 
         const queue = new Queue();
-
-        const {cellStateList} = view.state;
 
         cellStateList.forEach((cellData: ServerCellDataType, cellIndex: number) => {
             if (cellData.value) {
@@ -93,34 +135,7 @@ class Game extends Component<ReduxPropsType, PassedPropsType, StateType> {
                         return;
                     }
 
-                    const serverCellData = await getServerCellData(cellIndex);
-
-                    if (serverCellData === null) {
-                        console.error('---> Error: Can not get cell, cellIndex:', cellIndex);
-                        return;
-                    }
-
-                    cellStateList[cellIndex] = serverCellData;
-
-                    view.setState({cellStateList});
-
-                    const activeSymbolList = [symbolMap.tic, symbolMap.tac];
-
-                    const winnerData = getWinner(cellStateList, activeSymbolList);
-
-                    if (winnerData !== null) {
-                        console.log('---> winner is:', winnerData);
-                        view.stopListenServer();
-                        return;
-                    }
-
-                    if (isAllCellFilled(cellStateList, activeSymbolList)) {
-                        console.log('---> DRAW');
-                        view.stopListenServer();
-                        return;
-                    }
-
-                    console.log('---> no winner and battlefield is not fulfill -> game must go on');
+                    await view.fetchServerCellData(cellIndex);
                 }
             );
         });
@@ -180,7 +195,7 @@ class Game extends Component<ReduxPropsType, PassedPropsType, StateType> {
     render(): Node {
         const view = this;
         const {props, state} = view;
-        const {isStarted, cellStateList} = state;
+        const {isStarted, cellStateList, gameResult} = state;
 
         if (!isStarted) {
             return (
@@ -209,6 +224,7 @@ class Game extends Component<ReduxPropsType, PassedPropsType, StateType> {
                         );
                     }
                 )}
+                <div>game result: {gameResult === '' ? '' : <Locale stringKey={gameResult}/>}</div>
             </div>
         );
     }

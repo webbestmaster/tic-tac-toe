@@ -7,6 +7,10 @@ export type LangDataType = {|
     +HEADER__TOP_TEXT: string,
     +BUTTON__START_GAME: string,
 
+    +END_GAME_RESULT__X_WIN: string,
+    +END_GAME_RESULT__O_WIN: string,
+    +END_GAME_RESULT__DRAW: string,
+
     +LOGIN_POPUP__PLEASE_LOG_IN_OR_JOIN_NOW: string,
     +LOGIN_POPUP__INPUT_USERNAME: string,
     +LOGIN_POPUP__INPUT_PASSWORD: string,
