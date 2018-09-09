@@ -14,7 +14,7 @@ import homePageStyle from '../../page/home/style.scss';
 import {getServerCellData, symbolMap} from './api';
 import type {ServerCellDataType, SymbolType} from './api';
 import Queue from '../../lib/queue';
-import {getWinner, isAllCellFilled} from './helper';
+import {getWinner, isAllCellFilled, isWinCell} from './helper';
 import Button from '@material-ui/core/Button';
 import Locale from '../locale';
 import Cell from './cell';
@@ -37,7 +37,8 @@ type StateType = {|
     +isStarted: boolean,
     +isListenServerStart: boolean,
     +cellStateList: Array<ServerCellDataType>,
-    +gameResult: '' | 'END_GAME_RESULT__X_WIN' | 'END_GAME_RESULT__O_WIN' | 'END_GAME_RESULT__DRAW'
+    +gameResult: '' | 'END_GAME_RESULT__X_WIN' | 'END_GAME_RESULT__O_WIN' | 'END_GAME_RESULT__DRAW',
+    +winCellList: Array<ServerCellDataType>
 |};
 
 const reduxAction: ReduxActionType = {
@@ -66,7 +67,8 @@ class Game extends Component<ReduxPropsType, PassedPropsType, StateType> {
             cellStateList: new Array(9)
                 .fill({value: symbolMap.noDefine, index: 0})
                 .map((value: ServerCellDataType, index: number): ServerCellDataType => ({...value, index})),
-            gameResult: ''
+            gameResult: '',
+            winCellList: []
         };
     }
 
@@ -100,7 +102,8 @@ class Game extends Component<ReduxPropsType, PassedPropsType, StateType> {
 
         if (winnerData !== null) {
             view.setState({
-                gameResult: winnerData.value === symbolMap.tic ? 'END_GAME_RESULT__X_WIN' : 'END_GAME_RESULT__O_WIN'
+                gameResult: winnerData.value === symbolMap.tic ? 'END_GAME_RESULT__X_WIN' : 'END_GAME_RESULT__O_WIN',
+                winCellList: winnerData.cellList
             });
             console.log('---> winner is:', winnerData);
             view.stopListenServer();
@@ -203,7 +206,7 @@ class Game extends Component<ReduxPropsType, PassedPropsType, StateType> {
     render(): Node {
         const view = this;
         const {props, state} = view;
-        const {isStarted, cellStateList, gameResult} = state;
+        const {isStarted, cellStateList, gameResult, winCellList} = state;
 
         if (!isStarted) {
             return (
@@ -226,7 +229,7 @@ class Game extends Component<ReduxPropsType, PassedPropsType, StateType> {
                 <div className={style.field}>
                     {cellStateList.map(
                         (cell: ServerCellDataType): Node =>
-                            <Cell key={cell.index} value={cell.value}/>
+                            <Cell key={cell.index} value={cell.value} isWin={isWinCell(winCellList, cell)}/>
 
                     )}
                 </div>

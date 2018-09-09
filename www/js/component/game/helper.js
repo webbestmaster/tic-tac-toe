@@ -84,3 +84,7 @@ export function getWinner(cellList: Array<ServerCellDataType>, winnerList: Array
 export function isAllCellFilled(cellList: Array<ServerCellDataType>, cellTypeList: Array<SymbolType>): boolean {
     return cellList.every((cellInList: ServerCellDataType): boolean => cellTypeList.includes(cellInList.value));
 }
+
+export function isWinCell(winCellList: Array<ServerCellDataType>, cell: ServerCellDataType): boolean {
+    return Boolean(winCellList.find((cellInList: ServerCellDataType): boolean => cellInList.index === cell.index));
+}

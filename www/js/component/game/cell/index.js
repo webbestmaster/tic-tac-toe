@@ -11,6 +11,7 @@ import style from './style.scss';
 import type {SymbolType} from '../api';
 import {getImagePath} from './helper';
 import {symbolMap} from '../api';
+import classNames from 'classnames';
 
 type ReduxPropsType = {
     // +reduxProp: boolean
@@ -21,7 +22,8 @@ type ReduxActionType = {
 };
 
 type PassedPropsType = {|
-    +value: SymbolType
+    +value: SymbolType,
+    +isWin: boolean
     // +passedProp: string
 |};
 
@@ -60,7 +62,7 @@ class Cell extends Component<ReduxPropsType, PassedPropsType, StateType> {
         return (
             <div className={style.cell}>
                 <img className={style.cell_bg} src={getImagePath(symbolMap.noDefine)} alt=""/>
-                <div className={style.cell_value}>
+                <div className={classNames(style.cell_value, {[style.cell_win]: props.isWin})}>
                     <img className={style.cell_value} src={getImagePath(props.value)} alt=""/>
                 </div>
             </div>
