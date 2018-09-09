@@ -4,10 +4,8 @@ export type LangDataType = {|
     /* eslint-disable id-match, id-length */
     +META__LANGUAGE_NAME: string,
 
-    +HEADER__TOP_LINE: string,
-    +HEADER__BOTTOM_LINE: string,
-    +HEADER__PLAY_NOW: string,
-    +GAME_CARD__PLAY: string,
+    +HEADER__TOP_TEXT: string,
+    +BUTTON__START_GAME: string,
 
     +LOGIN_POPUP__PLEASE_LOG_IN_OR_JOIN_NOW: string,
     +LOGIN_POPUP__INPUT_USERNAME: string,

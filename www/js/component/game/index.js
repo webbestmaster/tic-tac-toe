@@ -15,6 +15,7 @@ import type {ServerCellDataType, SymbolType} from './api';
 import Queue from '../../lib/queue';
 import {getWinner, isAllCellFilled} from './helper';
 import Button from '@material-ui/core/Button';
+import Locale from '../locale';
 
 type ReduxPropsType = {};
 
@@ -191,7 +192,7 @@ class Game extends Component<ReduxPropsType, PassedPropsType, StateType> {
                         color="primary"
                         type="button"
                     >
-                        %start game%
+                        <Locale stringKey="BUTTON__START_GAME"/>
                     </Button>
                 </div>
             );

@@ -6,10 +6,8 @@ export const ruRu: LangDataType = {
     /* eslint-disable id-match, id-length */
     META__LANGUAGE_NAME: 'Русский',
 
-    HEADER__TOP_LINE: 'Попробуйте новые игры "Лото"',
-    HEADER__BOTTOM_LINE: 'и выиграйте джек-пот',
-    HEADER__PLAY_NOW: 'Начни играть!',
-    GAME_CARD__PLAY: 'Играть',
+    HEADER__TOP_TEXT: 'the blockchain technology for game development',
+    BUTTON__START_GAME: 'start game',
 
     LOGIN_POPUP__PLEASE_LOG_IN_OR_JOIN_NOW: 'Пожалуйста, войдите в систему или зарегистрируйтесь.',
     LOGIN_POPUP__INPUT_USERNAME: 'Логин',

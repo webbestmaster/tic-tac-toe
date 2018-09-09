@@ -6,10 +6,8 @@ export const zhCn: LangDataType = {
     /* eslint-disable id-match, id-length */
     META__LANGUAGE_NAME: '简体中文',
 
-    HEADER__TOP_LINE: 'Try our new lotto games',
-    HEADER__BOTTOM_LINE: 'And win the jackpot',
-    HEADER__PLAY_NOW: 'Play now!',
-    GAME_CARD__PLAY: 'Play',
+    HEADER__TOP_TEXT: 'the blockchain technology for game development',
+    BUTTON__START_GAME: 'start game',
 
     LOGIN_POPUP__PLEASE_LOG_IN_OR_JOIN_NOW: '请登录或立即注册。',
     LOGIN_POPUP__INPUT_USERNAME: '用户名',

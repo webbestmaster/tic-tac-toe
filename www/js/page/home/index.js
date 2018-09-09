@@ -9,6 +9,7 @@ import React, {Component} from 'react';
 import type {ContextRouterType} from '../../type/react-router-dom-v4';
 import Game from '../../component/game';
 import style from './style.scss';
+import Locale from '../../component/locale';
 
 type PropsType = {
     ...$Exact<ContextRouterType>
@@ -28,7 +29,7 @@ export default class Home extends Component<void, null> {
         return (
             <div className={style.page}>
                 <header className={style.header} key="header">
-                    %the blockchain technology for game development%
+                    <Locale stringKey="HEADER__TOP_TEXT"/>
                 </header>
                 <div className={style.content_wrapper}>
                     <Game key="game"/>
