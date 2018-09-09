@@ -183,15 +183,17 @@ class Game extends Component<ReduxPropsType, PassedPropsType, StateType> {
 
         if (!isStarted) {
             return (
-                <Button
-                    onClick={(): Promise<void> => view.startGame()}
-                    onKeyPress={(): Promise<void> => view.startGame()}
-                    variant="contained"
-                    color="primary"
-                    type="button"
-                >
-                    %start game%
-                </Button>
+                <div className={style.start_button_wrapper}>
+                    <Button
+                        onClick={(): Promise<void> => view.startGame()}
+                        onKeyPress={(): Promise<void> => view.startGame()}
+                        variant="contained"
+                        color="primary"
+                        type="button"
+                    >
+                        %start game%
+                    </Button>
+                </div>
             );
         }
 

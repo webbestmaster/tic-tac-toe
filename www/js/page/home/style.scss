@@ -1,5 +1,13 @@
 @import '../../../css/var';
 
+.page {
+    background-color: #0c0;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    position: absolute;
+}
+
 .header {
     color: $main-text-color;
     font-size: 26px;
@@ -7,4 +15,11 @@
     padding: 10px;
     text-align: center;
     text-shadow: 1px -1px 0 #767676;
+}
+
+.content_wrapper {
+    display: block;
+    flex-grow: 1;
+    overflow: auto;
+    position: relative;
 }

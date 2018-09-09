@@ -25,11 +25,15 @@ export default class Home extends Component<void, null> {
 
         console.log(props, state);
 
-        return [
-            <header className={style.header} key="header">
-                %the blockchain technology for game development%
-            </header>,
-            <Game key="game"/>
-        ];
+        return (
+            <div className={style.page}>
+                <header className={style.header} key="header">
+                    %the blockchain technology for game development%
+                </header>
+                <div className={style.content_wrapper}>
+                    <Game key="game"/>
+                </div>
+            </div>
+        );
     }
 }
