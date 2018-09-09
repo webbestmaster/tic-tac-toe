@@ -9,9 +9,11 @@ import type {GlobalStateType} from '../../../app-reducer';
 import type {ContextRouterType} from '../../../type/react-router-dom-v4';
 import style from './style.scss';
 import type {SymbolType} from '../api';
-import {getImagePath} from './helper';
+import {getImageComponent} from './helper';
+import noDefineImage from './i/no-define.svg';
 import {symbolMap} from '../api';
 import classNames from 'classnames';
+import MtSvgLines from 'react-mt-svg-lines';
 
 type ReduxPropsType = {
     // +reduxProp: boolean
@@ -59,11 +61,19 @@ class Cell extends Component<ReduxPropsType, PassedPropsType, StateType> {
         const view = this;
         const {props, state} = view;
 
+        const SvgComponent = getImageComponent(props.value);
+
         return (
-            <div className={style.cell}>
-                <img className={style.cell_bg} src={getImagePath(symbolMap.noDefine)} alt=""/>
-                <div className={classNames(style.cell_value, {[style.cell_win]: props.isWin})}>
-                    <img className={style.cell_value} src={getImagePath(props.value)} alt=""/>
+            <div className={classNames(style.cell, {[style.cell_win]: props.isWin})}>
+                <img className={style.cell_bg} src={noDefineImage} alt=""/>
+                <div
+                    className={classNames(style.cell_value, {
+                        [style.cell_value_set]: props.value !== symbolMap.noDefine
+                    })}
+                >
+                    <MtSvgLines animate duration={700}>
+                        <SvgComponent/>
+                    </MtSvgLines>
                 </div>
             </div>
         );

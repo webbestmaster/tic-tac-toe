@@ -1,22 +1,24 @@
 // @flow
 
+import React, {Component} from 'react';
+import type {Node} from 'react';
 import type {SymbolType} from '../api';
 import {symbolMap} from '../api';
-import noDefineImage from './i/empty.svg';
-import ticImage from './i/x.svg';
-import tacImage from './i/o.svg';
+import SymbolX from './symbol/symbol-x';
+import SymbolO from './symbol/symbol-o';
+import SymbolNoDefine from './symbol/symbol-no-define';
 
-export function getImagePath(imageName: SymbolType): string {
+export function getImageComponent(imageName: SymbolType): Class<Component> {
     switch (imageName) {
         case symbolMap.tic:
-            return ticImage;
+            return SymbolX;
         case symbolMap.tac:
-            return tacImage;
+            return SymbolO;
         case symbolMap.noDefine:
-            return noDefineImage;
+            return SymbolNoDefine;
         default:
             console.error('can not get image for imageName:', imageName);
     }
 
-    return noDefineImage;
+    return SymbolNoDefine;
 }

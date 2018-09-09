@@ -100,6 +100,11 @@ class Game extends Component<ReduxPropsType, PassedPropsType, StateType> {
 
         const winnerData = getWinner(cellStateList, activeSymbolList);
 
+        await new Promise((resolve: () => void) => {
+            // time to animate cell drawing
+            setTimeout(resolve, 500);
+        });
+
         if (winnerData !== null) {
             view.setState({
                 gameResult: winnerData.value === symbolMap.tic ? 'END_GAME_RESULT__X_WIN' : 'END_GAME_RESULT__O_WIN',

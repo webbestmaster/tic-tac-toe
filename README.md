@@ -26,3 +26,5 @@ Add in your index.html
 ```HTML
 <script src="http://172.21.1.215:8080/target/target-script-min.js#anonymous"></script>
 ```
+
+### react-hot-loader need for react-mt-svg-lines only
