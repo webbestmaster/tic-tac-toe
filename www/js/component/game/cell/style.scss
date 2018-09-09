@@ -18,6 +18,12 @@
     }
 }
 
+.cell_win {
+    &:after {
+        opacity: 1;
+    }
+}
+
 .cell_bg {
     display: block;
     height: 100%;
@@ -35,12 +41,6 @@
     z-index: 1;
 
     &.cell_value_set {
-        opacity: 1;
-    }
-}
-
-.cell_win {
-    &:after {
         opacity: 1;
     }
 }

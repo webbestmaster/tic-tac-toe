@@ -202,12 +202,6 @@ class Game extends Component<ReduxPropsType, PassedPropsType, StateType> {
         await view.startListenServer();
     }
 
-    componentDidMount() {
-        const view = this;
-
-        view.startGame();
-    }
-
     render(): Node {
         const view = this;
         const {props, state} = view;
