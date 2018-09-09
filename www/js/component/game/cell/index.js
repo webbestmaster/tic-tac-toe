@@ -8,8 +8,9 @@ import {connect} from 'react-redux';
 import type {GlobalStateType} from '../../../app-reducer';
 import type {ContextRouterType} from '../../../type/react-router-dom-v4';
 import style from './style.scss';
-import emptyCellImage from './i/empty.svg';
 import type {SymbolType} from '../api';
+import {getImagePath} from './helper';
+import {symbolMap} from '../api';
 
 type ReduxPropsType = {
     // +reduxProp: boolean
@@ -58,8 +59,10 @@ class Cell extends Component<ReduxPropsType, PassedPropsType, StateType> {
 
         return (
             <div className={style.cell}>
-                <img className={style.cell_bg} src={emptyCellImage} alt=""/>
-                <div className={style.cell_value}>{props.value}</div>
+                <img className={style.cell_bg} src={getImagePath(symbolMap.noDefine)} alt=""/>
+                <div className={style.cell_value}>
+                    <img className={style.cell_value} src={getImagePath(props.value)} alt=""/>
+                </div>
             </div>
         );
     }
