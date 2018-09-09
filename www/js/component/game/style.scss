@@ -1,13 +1,9 @@
 //
-
-.cell {
-    float: left;
-    height: 20px;
-    text-align: center;
-    width: 33.33333%;
-}
+@import './../../../css/service';
 
 .wrapper {
+    @extend %clear-full;
+
     align-items: center;
     display: flex;
     flex-direction: column;
@@ -18,8 +14,9 @@
 }
 
 .field {
-    background-color: #0c0;
+    box-sizing: border-box;
     max-width: 512px;
     min-width: 320px;
+    padding: 10px;
     width: 50%;
 }

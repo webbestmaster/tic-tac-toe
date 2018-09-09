@@ -17,6 +17,7 @@ import Queue from '../../lib/queue';
 import {getWinner, isAllCellFilled} from './helper';
 import Button from '@material-ui/core/Button';
 import Locale from '../locale';
+import Cell from './cell';
 
 type ReduxPropsType = {};
 
@@ -193,6 +194,12 @@ class Game extends Component<ReduxPropsType, PassedPropsType, StateType> {
         await view.startListenServer();
     }
 
+    componentDidMount() {
+        const view = this;
+
+        view.startGame();
+    }
+
     render(): Node {
         const view = this;
         const {props, state} = view;
@@ -218,13 +225,9 @@ class Game extends Component<ReduxPropsType, PassedPropsType, StateType> {
             <div className={style.wrapper}>
                 <div className={style.field}>
                     {cellStateList.map(
-                        (cell: ServerCellDataType): Node => {
-                            return (
-                                <div key={cell.index} className={style.cell}>
-                                    {cell.value}
-                                </div>
-                            );
-                        }
+                        (cell: ServerCellDataType): Node =>
+                            <Cell key={cell.index} value={cell.value}/>
+
                     )}
                 </div>
                 <p className={homePageStyle.header}>

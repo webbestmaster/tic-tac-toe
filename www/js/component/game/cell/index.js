@@ -8,6 +8,8 @@ import {connect} from 'react-redux';
 import type {GlobalStateType} from '../../../app-reducer';
 import type {ContextRouterType} from '../../../type/react-router-dom-v4';
 import style from './style.scss';
+import emptyCellImage from './i/empty.svg';
+import type {SymbolType} from '../api';
 
 type ReduxPropsType = {
     // +reduxProp: boolean
@@ -17,16 +19,17 @@ type ReduxActionType = {
     // +setSmth: (smth: string) => string
 };
 
-type PassedPropsType = {
+type PassedPropsType = {|
+    +value: SymbolType
     // +passedProp: string
-};
+|};
 
 type PropsType = $ReadOnly<$Exact<{
         ...$Exact<PassedPropsType>,
         ...$Exact<ReduxPropsType>,
-        ...$Exact<ReduxActionType>,
+        ...$Exact<ReduxActionType>
         // ...$Exact<ContextRouterType>,
-        +children: Node
+        // +children: Node
     }>>;
 
 type StateType = {
@@ -53,7 +56,12 @@ class Cell extends Component<ReduxPropsType, PassedPropsType, StateType> {
         const view = this;
         const {props, state} = view;
 
-        return <div>%the cell%</div>;
+        return (
+            <div className={style.cell}>
+                <img className={style.cell_bg} src={emptyCellImage} alt=""/>
+                <div className={style.cell_value}>{props.value}</div>
+            </div>
+        );
     }
 }
 

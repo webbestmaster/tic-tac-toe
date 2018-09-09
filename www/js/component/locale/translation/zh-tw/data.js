@@ -6,7 +6,7 @@ export const zhTw: LangDataType = {
     /* eslint-disable id-match, id-length */
     META__LANGUAGE_NAME: '繁體中文',
 
-    HEADER__TOP_TEXT: 'the blockchain technology for game development',
+    HEADER__TOP_TEXT: 'the blockchain for game development',
     BUTTON__START_GAME: 'start game',
 
     END_GAME_RESULT__X_WIN: 'X win',
