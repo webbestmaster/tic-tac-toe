@@ -26,32 +26,74 @@ export const symbolMap: SymbolMapType = {
     noDefine: ''
 };
 
-export async function getServerCellData(cellIndex: number): Promise<ServerCellDataType | null> {
-    const getServerCellDataUrl = appConst.api.getServerCellData;
+type ServerCellBalanceType = {
+    // "address" : "3P6eC7TYNmT15Lw9UpeESDuYNcer78LFkg8",
+    // "assetId" : "2",
+    balance: number
+};
+
+async function getCellBalance(address: string, assertId: number): Promise<ServerCellBalanceType | null> {
+    const getServerCellBalanceUrl = appConst.api.getServerCellBalance
+        .replace('{address}', address)
+        .replace('{assetId}', String(assertId + 1));
 
     return window
-        .fetch(getServerCellDataUrl)
+        .fetch(getServerCellBalanceUrl)
+        .then((response: Response): Promise<ServerCellBalanceType> => response.json())
+        .catch(
+            (error: Error): null => {
+                console.error('---> ERROR: can not get server cell data!');
+                console.error(
+                    `---> ERROR: address: ${address}, assertId: ${assertId}, url: ${getServerCellBalanceUrl}`
+                );
+                console.error(error);
+
+                return null;
+            }
+        );
+}
+
+export async function getServerCellBalance(cellIndex: number): Promise<ServerCellDataType | null> {
+    return await Promise.all([
+        getCellBalance(appConst.address.symbolX, cellIndex),
+        getCellBalance(appConst.address.symbolO, cellIndex)
+    ])
         .then(
-            async (response: Response): Promise<ServerCellDataType | null> => {
-                const parsedResponse = await response.json();
+            (
+                cellBalanceList: [ServerCellBalanceType | null, ServerCellBalanceType | null]
+            ): ServerCellDataType | null => {
+                const [cellX, cellO] = cellBalanceList;
 
-                console.log('---> parsed response:', parsedResponse);
-
-                if (Math.random() > 0.75) {
+                if (cellX === null || cellO === null) {
                     return null;
                 }
 
+                const balanceX = cellX.balance;
+                const balanceO = cellO.balance;
+
+                if (balanceX === 1) {
+                    return {
+                        value: symbolMap.tic,
+                        index: cellIndex
+                    };
+                }
+
+                if (balanceO === 1) {
+                    return {
+                        value: symbolMap.tac,
+                        index: cellIndex
+                    };
+                }
+
                 return {
-                    value: Math.random() > 0.5 ? symbolMap.tic : symbolMap.tac,
+                    value: symbolMap.noDefine,
                     index: cellIndex
                 };
             }
         )
         .catch(
             (error: Error): null => {
-                console.error(
-                    `---> ERROR: can not get server cell data! cellIndex: ${cellIndex}, url: ${getServerCellDataUrl}`
-                );
+                console.error(`---> ERROR: can not get server cell data! cellIndex: ${cellIndex}`);
                 console.error(error);
 
                 return null;

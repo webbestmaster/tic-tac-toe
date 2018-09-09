@@ -9,7 +9,7 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import type {GlobalStateType} from '../../app-reducer';
 import style from './style.scss';
-import {getServerCellData, symbolMap} from './api';
+import {getServerCellBalance, symbolMap} from './api';
 import type {ServerCellDataType, SymbolType} from './api';
 import Queue from '../../lib/queue';
 import {getWinner, isAllCellFilled, isWinCell} from './helper';
@@ -77,13 +77,13 @@ class Game extends Component<ReduxPropsType, PassedPropsType, StateType> {
         return state.isListenServerStart;
     }
 
-    // eslint-disable-next-line  max-statements
+    // eslint-disable-next-line  max-statements, complexity
     async fetchServerCellData(cellIndex: number): Promise<void> {
         const view = this;
         const {state} = view;
         const {cellStateList} = state;
 
-        const serverCellData = await getServerCellData(cellIndex);
+        const serverCellData = await getServerCellBalance(cellIndex);
 
         if (serverCellData === null) {
             console.error('---> Error: Can not get cell, cellIndex:', cellIndex);
@@ -94,14 +94,16 @@ class Game extends Component<ReduxPropsType, PassedPropsType, StateType> {
 
         view.setState({cellStateList});
 
+        if (serverCellData.value !== symbolMap.noDefine) {
+            await new Promise((resolve: () => void) => {
+                // time to animate cell drawing
+                setTimeout(resolve, 500);
+            });
+        }
+
         const activeSymbolList = [symbolMap.tic, symbolMap.tac];
 
         const winnerData = getWinner(cellStateList, activeSymbolList);
-
-        await new Promise((resolve: () => void) => {
-            // time to animate cell drawing
-            setTimeout(resolve, 500);
-        });
 
         if (winnerData !== null) {
             view.setState({
