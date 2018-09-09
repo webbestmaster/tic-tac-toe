@@ -1,3 +1,5 @@
+/* stylelint-disable max-nesting-depth */
+
 .cell {
     float: left;
     position: relative;
@@ -16,11 +18,11 @@
         width: 90%;
         z-index: 0;
     }
-}
 
-.cell_win {
-    &:after {
-        opacity: 1;
+    &.cell_win {
+        &:after {
+            opacity: 1;
+        }
     }
 }
 
