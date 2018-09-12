@@ -2,11 +2,11 @@
 
 /* global window */
 
-import appConst from '../../app-const';
+import appConst from '../../app/app-const';
 
-export type SymbolTicType = 'X';
-export type SymbolTacType = 'O';
-export type SymbolNoDefineType = '';
+export type SymbolTicType = 1;
+export type SymbolTacType = 10;
+export type SymbolNoDefineType = 0;
 export type SymbolType = SymbolTicType | SymbolTacType | SymbolNoDefineType;
 
 type SymbolMapType = {|
@@ -21,82 +21,58 @@ export type ServerCellDataType = {
 };
 
 export const symbolMap: SymbolMapType = {
-    tic: 'X',
-    tac: 'O',
-    noDefine: ''
+    tic: 1,
+    tac: 10,
+    noDefine: 0
 };
 
-type ServerCellBalanceType = {
-    // "address" : "3P6eC7TYNmT15Lw9UpeESDuYNcer78LFkg8",
-    // "assetId" : "2",
-    balance: number
-};
+type CellStateType = SymbolType;
+type CellStateListType = {|
+    +cellList: Array<CellStateType>
+|};
 
-async function getCellBalance(address: string, assertId: number): Promise<ServerCellBalanceType | null> {
-    const getServerCellBalanceUrl = appConst.api.getServerCellBalance
-        .replace('{address}', address)
-        .replace('{assetId}', String(assertId + 1));
-
+export async function getCellListState(): Promise<CellStateListType | Error> {
     return window
-        .fetch(getServerCellBalanceUrl)
-        .then((response: Response): Promise<ServerCellBalanceType> => response.json())
-        .catch(
-            (error: Error): null => {
-                console.error('---> ERROR: can not get server cell data!');
-                console.error(
-                    `---> ERROR: address: ${address}, assertId: ${assertId}, url: ${getServerCellBalanceUrl}`
-                );
-                console.error(error);
-
-                return null;
-            }
-        );
-}
-
-export async function getServerCellBalance(cellIndex: number): Promise<ServerCellDataType | null> {
-    return await Promise.all([
-        getCellBalance(appConst.address.symbolX, cellIndex),
-        getCellBalance(appConst.address.symbolO, cellIndex)
-    ])
+        .fetch('https://testnodes.wavesnodes.com/addresses/data/3N5jLr4xW9XhE2bnrdvUKyCzRfQCUdcBuQC')
         .then(
-            (
-                cellBalanceList: [ServerCellBalanceType | null, ServerCellBalanceType | null]
-            ): ServerCellDataType | null => {
-                const [cellX, cellO] = cellBalanceList;
+            async (response: Response): Promise<CellStateListType> => {
+                const parsedResponse = await response.json();
 
-                if (cellX === null || cellO === null) {
-                    return null;
-                }
+                const cellList = [1, 2, 3, 4, 5, 6, 7, 8, 9].map(
+                    (cellName: number): CellStateType => {
+                        const cell =
+                            parsedResponse.find(
+                                (cellInList: {key: mixed, value: mixed}): boolean =>
+                                    cellInList.key === `cell${cellName}`
+                            ) || null;
 
-                const balanceX = cellX.balance;
-                const balanceO = cellO.balance;
+                        if (cell === null) {
+                            console.error(`Can not find cell with key = cell${cellName}`);
+                            return symbolMap.noDefine;
+                        }
 
-                if (balanceX === 1) {
-                    return {
-                        value: symbolMap.tic,
-                        index: cellIndex
-                    };
-                }
+                        const {value} = cell;
 
-                if (balanceO === 1) {
-                    return {
-                        value: symbolMap.tac,
-                        index: cellIndex
-                    };
-                }
+                        if ([symbolMap.tic, symbolMap.tac, symbolMap.noDefine].includes(value)) {
+                            return value;
+                        }
+
+                        console.error('cell.value is not support', cell);
+
+                        return symbolMap.noDefine;
+                    }
+                );
 
                 return {
-                    value: symbolMap.noDefine,
-                    index: cellIndex
+                    cellList
                 };
             }
         )
         .catch(
-            (error: Error): null => {
-                console.error(`---> ERROR: can not get server cell data! cellIndex: ${cellIndex}`);
+            (error: Error): Error => {
+                console.error('can not get cell state list');
                 console.error(error);
-
-                return null;
+                return error;
             }
         );
 }

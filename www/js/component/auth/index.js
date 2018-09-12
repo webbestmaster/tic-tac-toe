@@ -10,7 +10,7 @@ import {connect} from 'react-redux';
 import type {SetUserType} from './action';
 import {setUser} from './action';
 import type {AuthType, UserType} from './reducer';
-import type {GlobalStateType} from '../../app-reducer';
+import type {GlobalStateType} from '../../app/app-reducer';
 
 type ReduxPropsType = {|
     +auth: AuthType

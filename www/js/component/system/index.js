@@ -9,7 +9,7 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import type {OnResizeType} from './action';
 import {onResize} from './action';
-import type {GlobalStateType} from '../../app-reducer';
+import type {GlobalStateType} from '../../app/app-reducer';
 import type {SystemType} from './reducer';
 import classNames from 'classnames';
 import style from './style.css';

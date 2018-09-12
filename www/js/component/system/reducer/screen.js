@@ -3,7 +3,7 @@
 /* global window */
 
 import {systemConst} from '../const';
-import type {ActionDataType} from '../../../app-reducer-type';
+import type {ActionDataType} from '../../../app/app-reducer-type';
 
 type ScreenWidthNameType = 'desktop' | 'tablet' | 'mobile';
 

@@ -7,9 +7,9 @@
 import type {Node} from 'react';
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import type {GlobalStateType} from '../../app-reducer';
+import type {GlobalStateType} from '../../app/app-reducer';
 import style from './style.scss';
-import {getServerCellBalance, symbolMap} from './api';
+import {getCellListState, symbolMap} from './api';
 import type {ServerCellDataType, SymbolType} from './api';
 import Queue from '../../lib/queue';
 import {getWinner, isAllCellFilled, isWinCell} from './helper';
@@ -77,82 +77,26 @@ class Game extends Component<ReduxPropsType, PassedPropsType, StateType> {
         return state.isListenServerStart;
     }
 
-    // eslint-disable-next-line  max-statements, complexity
-    async fetchServerCellData(cellIndex: number): Promise<void> {
-        const view = this;
-        const {state} = view;
-        const {cellStateList} = state;
-
-        const serverCellData = await getServerCellBalance(cellIndex);
-
-        if (serverCellData === null) {
-            console.error('---> Error: Can not get cell, cellIndex:', cellIndex);
-            return;
-        }
-
-        cellStateList[cellIndex] = serverCellData;
-
-        view.setState({cellStateList});
-
-        if (serverCellData.value !== symbolMap.noDefine) {
-            await new Promise((resolve: () => void) => {
-                // time to animate cell drawing
-                setTimeout(resolve, 500);
-            });
-        }
-
-        const activeSymbolList = [symbolMap.tic, symbolMap.tac];
-
-        const winnerData = getWinner(cellStateList, activeSymbolList);
-
-        if (winnerData !== null) {
-            view.setState({
-                gameResult: winnerData.value === symbolMap.tic ? 'END_GAME_RESULT__X_WIN' : 'END_GAME_RESULT__O_WIN',
-                winCellList: winnerData.cellList
-            });
-            console.log('---> winner is:', winnerData);
-            view.stopListenServer();
-            return;
-        }
-
-        if (isAllCellFilled(cellStateList, activeSymbolList)) {
-            console.log('---> DRAW');
-            view.setState({gameResult: 'END_GAME_RESULT__DRAW'});
-            view.stopListenServer();
-            return;
-        }
-
-        console.log('---> no winner and battlefield is not fulfill -> game must go on');
-    }
-
     async fetchServerCellListData(): Promise<void> {
         const view = this;
         const {state} = view;
         const {cellStateList} = state;
 
-        const queue = new Queue();
+        const serverCellStateList = await getCellListState();
 
-        cellStateList.forEach((cellData: ServerCellDataType, cellIndex: number) => {
-            if (cellData.value) {
-                console.log(`---> value for cellIndex: ${cellIndex} already exists, request no needed`);
-                return;
+        if (serverCellStateList instanceof Error) {
+            return;
+        }
+
+        const newCellStateList = cellStateList.map(
+            (cell: ServerCellDataType): ServerCellDataType => {
+                return {...cell, value: serverCellStateList.cellList[cell.index]};
             }
+        );
 
-            queue.push(
-                async (): Promise<void> => {
-                    if (!view.isListenServerStart()) {
-                        console.log('no fetch, server listen is stop');
-                        return;
-                    }
+        view.setState({cellStateList: newCellStateList});
 
-                    await view.fetchServerCellData(cellIndex);
-                }
-            );
-        });
-
-        return new Promise((resolve: () => void) => {
-            queue.push(resolve);
-        });
+        console.log(serverCellStateList);
     }
 
     async startListenServer(): Promise<void> {
