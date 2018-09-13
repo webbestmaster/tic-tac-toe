@@ -214,7 +214,8 @@ class Game extends Component<ReduxPropsType, PassedPropsType, StateType> {
                         color="primary"
                         type="button"
                     >
-                        <Locale stringKey="BUTTON__START_GAME"/>
+                        <Locale stringKey="BUTTON__LOAD_FILE"/>
+                        <input className={style.input_file} type="file"/>
                     </Button>
                 </div>
             );

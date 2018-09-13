@@ -8,6 +8,7 @@ export const enUs: LangDataType = {
 
     HEADER__TOP_TEXT: 'the blockchain for game development',
     BUTTON__START_GAME: 'start game',
+    BUTTON__LOAD_FILE: 'load file',
 
     END_GAME_RESULT__X_WIN: 'X win',
     END_GAME_RESULT__O_WIN: 'O win',

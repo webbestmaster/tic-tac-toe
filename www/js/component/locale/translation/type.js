@@ -6,6 +6,7 @@ export type LangDataType = {|
 
     +HEADER__TOP_TEXT: string,
     +BUTTON__START_GAME: string,
+    +BUTTON__LOAD_FILE: string,
 
     +END_GAME_RESULT__X_WIN: string,
     +END_GAME_RESULT__O_WIN: string,
