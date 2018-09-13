@@ -95,8 +95,34 @@ class Game extends Component<ReduxPropsType, PassedPropsType, StateType> {
         );
 
         view.setState({cellStateList: newCellStateList});
+    }
 
-        console.log(serverCellStateList);
+    checkWinner() {
+        const view = this;
+        const {state} = view;
+        const {cellStateList} = state;
+        const activeSymbolList = [symbolMap.tic, symbolMap.tac];
+
+        const winnerData = getWinner(cellStateList, activeSymbolList);
+
+        if (winnerData !== null) {
+            view.setState({
+                gameResult: winnerData.value === symbolMap.tic ? 'END_GAME_RESULT__X_WIN' : 'END_GAME_RESULT__O_WIN',
+                winCellList: winnerData.cellList
+            });
+            console.log('---> winner is:', winnerData);
+            view.stopListenServer();
+            return;
+        }
+
+        if (isAllCellFilled(cellStateList, activeSymbolList)) {
+            console.log('---> DRAW');
+            view.setState({gameResult: 'END_GAME_RESULT__DRAW'});
+            view.stopListenServer();
+            return;
+        }
+
+        console.log('---> no winner and battlefield is not fulfill -> game must go on');
     }
 
     async startListenServer(): Promise<void> {
@@ -117,6 +143,8 @@ class Game extends Component<ReduxPropsType, PassedPropsType, StateType> {
                     }
 
                     await view.fetchServerCellListData();
+
+                    view.checkWinner();
 
                     setTimeout(watch, serverListenPerion);
                 }
