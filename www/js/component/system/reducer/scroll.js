@@ -3,7 +3,7 @@
 /* global window */
 
 import {systemConst} from '../const';
-import type {ActionDataType} from '../../../app/app-reducer-type';
+import type {ActionDataType} from '../../../app/type';
 
 export type ScrollType = {|
     +isEnable: boolean,

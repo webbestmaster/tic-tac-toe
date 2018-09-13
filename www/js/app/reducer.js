@@ -6,8 +6,8 @@ import auth from '../component/auth/reducer';
 import type {LocaleType} from '../component/locale/reducer';
 import locale from '../component/locale/reducer';
 
-import type {SystemType} from '../component/system/reducer';
-import system from '../component/system/reducer';
+import type {SystemType} from '../component/system/reducer/root';
+import system from '../component/system/reducer/root';
 
 export {auth, locale, system};
 

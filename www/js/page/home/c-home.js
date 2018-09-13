@@ -7,9 +7,9 @@
 import type {Node} from 'react';
 import React, {Component} from 'react';
 import type {ContextRouterType} from '../../type/react-router-dom-v4';
-import Game from '../../component/game';
+import Game from '../../component/game/c-game';
 import style from './style.scss';
-import Locale from '../../component/locale';
+import Locale from '../../component/locale/c-locale';
 
 type PropsType = {
     ...$Exact<ContextRouterType>

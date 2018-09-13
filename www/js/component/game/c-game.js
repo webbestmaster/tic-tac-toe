@@ -7,15 +7,15 @@
 import type {Node} from 'react';
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import type {GlobalStateType} from '../../app/app-reducer';
+import type {GlobalStateType} from '../../app/reducer';
 import style from './style.scss';
 import {getCellListState, symbolMap} from './api';
 import type {ServerCellDataType, SymbolType} from './api';
 import Queue from '../../lib/queue';
 import {getWinner, isAllCellFilled, isWinCell} from './helper';
 import Button from '@material-ui/core/Button';
-import Locale from '../locale';
-import Cell from './cell';
+import Locale from '../locale/c-locale';
+import Cell from './cell/c-cell';
 
 type ReduxPropsType = {};
 

@@ -7,7 +7,7 @@
 import type {Node} from 'react';
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import type {GlobalStateType} from '../../app/app-reducer';
+import type {GlobalStateType} from '../../app/reducer';
 import type {LocaleType} from './reducer';
 import type {LocaleNameType} from './const';
 import {allLocales, localeConst} from './const';

@@ -2,7 +2,7 @@
 
 /* global window */
 
-import appConst from '../../app/app-const';
+import appConst from '../../app/const';
 
 export type SymbolTicType = 1;
 export type SymbolTacType = 10;
@@ -33,7 +33,7 @@ type CellStateListType = {|
 
 export async function getCellListState(): Promise<CellStateListType | Error> {
     return window
-        .fetch('https://testnodes.wavesnodes.com/addresses/data/3N5jLr4xW9XhE2bnrdvUKyCzRfQCUdcBuQC')
+        .fetch(appConst.api.cellStateList)
         .then(
             async (response: Response): Promise<CellStateListType> => {
                 const parsedResponse = await response.json();
