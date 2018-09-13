@@ -32,6 +32,7 @@
   },
   "dependencies": {
     "@material-ui/core": "^3.0.3",
+    "@waves/waves-api": "^1.4.0",
     "classnames": "^2.2.6",
     "react": "^16.5.0",
     "react-dom": "^16.5.0",
@@ -39,8 +40,7 @@
     "react-redux": "^5.0.7",
     "react-router-dom": "^4.3.1",
     "redux": "^4.0.0",
-    "redux-thunk": "^2.3.0",
-    "waves-api": "^0.24.2"
+    "redux-thunk": "^2.3.0"
   },
   "devDependencies": {
     "@babel/core": "^7.0.1",

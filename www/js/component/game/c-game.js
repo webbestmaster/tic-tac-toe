@@ -19,7 +19,7 @@ import type {AuthType, UserType} from '../auth/reducer';
 import type {SetUserType} from '../auth/action';
 import {setUser} from '../auth/action';
 
-const WavesAPI = require('waves-api');
+const WavesAPI = require('@waves/waves-api');
 
 type ReduxPropsType = {|
     +auth: AuthType
@@ -228,8 +228,7 @@ class Game extends Component<ReduxPropsType, PassedPropsType, StateType> {
                             onInput={(evt: SyntheticEvent<HTMLInputElement>) => {
                                 readFileFromInput(evt.currentTarget.files[0])
                                     .then((text: string) => {
-                                        const Waves = WavesAPI.create(WavesAPI.TESTNET_CONFIG);
-                                        const seed = Waves.Seed.fromExistingPhrase(text);
+                                        makeTest(text);
                                     })
                                     .catch(
                                         (error: Error): Error => {
@@ -268,3 +267,42 @@ export default connect(
     }),
     reduxAction
 )(Game);
+
+async function makeTest(text: string): Promise<void> {
+    const Waves = WavesAPI.create(WavesAPI.TESTNET_CONFIG);
+    const seed = Waves.Seed.fromExistingPhrase(text);
+
+    const data = [
+        {
+            key: 'cell1',
+            value: 1,
+            type: 'integer'
+        },
+        {
+            key: 'deadline',
+            value: Date.now() + 1e3,
+            type: 'integer'
+        }
+    ];
+
+    // const dataTxObj = Object.assign(Helpers.TX_EXAMPLES.DATA, {
+    const dataTxObj = Object.assign(
+        {},
+        {
+            data,
+            fee: await Waves.tools.getMinimumDataTxFee(data) + 400000,
+            sender: seed.address,
+            senderPublicKey: seed.keyPair.publicKey
+        }
+    );
+
+    const dataTx = await Waves.tools.createTransaction(Waves.constants.DATA_TX_NAME, dataTxObj);
+
+    dataTx.addProof(seed.keyPair.privateKey);
+
+    // send Data Transction to the network
+    const dataTxJSON = await dataTx.getJSON();
+    const dataTxResult35 = await Waves.API.Node.transactions.rawBroadcast(dataTxJSON);
+
+    console.log(dataTxResult35);
+}
