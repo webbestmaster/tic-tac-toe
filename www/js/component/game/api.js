@@ -31,40 +31,50 @@ type CellStateListType = {|
     +cellList: Array<CellStateType>
 |};
 
+type RawServerCellDataType = {key: mixed, value: mixed};
+
+function extractCellList(parsedResponse: Array<RawServerCellDataType>): Array<SymbolType> {
+    return [1, 2, 3, 4, 5, 6, 7, 8, 9].map(
+        // eslint-disable-next-line complexity
+        (cellName: number): CellStateType => {
+            const cell =
+                parsedResponse.find(
+                    (cellInList: RawServerCellDataType): boolean => cellInList.key === `cell${cellName}`
+                ) || null;
+
+            if (cell === null) {
+                console.error(`Can not find cell with key = cell${cellName}`);
+                return symbolMap.noDefine;
+            }
+
+            const {value} = cell;
+
+            if (value === symbolMap.noDefine) {
+                return symbolMap.noDefine;
+            }
+
+            if (value === symbolMap.tic) {
+                return symbolMap.tic;
+            }
+            if (value === symbolMap.tac) {
+                return symbolMap.tac;
+            }
+
+            console.error('cell.value is not support', cell);
+
+            return symbolMap.noDefine;
+        }
+    );
+}
+
 export async function getCellListState(): Promise<CellStateListType | Error> {
     return window
         .fetch(appConst.api.cellStateList)
+        .then((response: Response): Promise<Array<RawServerCellDataType>> => response.json())
         .then(
-            async (response: Response): Promise<CellStateListType> => {
-                const parsedResponse = await response.json();
-
-                const cellList = [1, 2, 3, 4, 5, 6, 7, 8, 9].map(
-                    (cellName: number): CellStateType => {
-                        const cell =
-                            parsedResponse.find(
-                                (cellInList: {key: mixed, value: mixed}): boolean =>
-                                    cellInList.key === `cell${cellName}`
-                            ) || null;
-
-                        if (cell === null) {
-                            console.error(`Can not find cell with key = cell${cellName}`);
-                            return symbolMap.noDefine;
-                        }
-
-                        const {value} = cell;
-
-                        if ([symbolMap.tic, symbolMap.tac, symbolMap.noDefine].includes(value)) {
-                            return value;
-                        }
-
-                        console.error('cell.value is not support', cell);
-
-                        return symbolMap.noDefine;
-                    }
-                );
-
+            (parsedResponse: Array<RawServerCellDataType>): CellStateListType => {
                 return {
-                    cellList
+                    cellList: extractCellList(parsedResponse)
                 };
             }
         )
