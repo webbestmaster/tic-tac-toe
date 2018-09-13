@@ -1,7 +1,10 @@
 // @flow
 
+/* global FileReader */
+
 import type {ServerCellDataType, SymbolType} from './api';
 import {symbolMap} from './api';
+import {isString} from '../../lib/is';
 
 export type GetWinnerType = {|
     +value: SymbolType,
@@ -87,4 +90,14 @@ export function isAllCellFilled(cellList: Array<ServerCellDataType>, cellTypeLis
 
 export function isWinCell(winCellList: Array<ServerCellDataType>, cell: ServerCellDataType): boolean {
     return Boolean(winCellList.find((cellInList: ServerCellDataType): boolean => cellInList.index === cell.index));
+}
+
+export async function readFileFromInput(file: File): Promise<string> {
+    return new Promise((resolve: (fileData: string) => void) => {
+        const reader = new FileReader();
+
+        reader.addEventListener('load', (): void => resolve(isString(reader.result) ? reader.result : ''), false);
+
+        reader.readAsText(file);
+    });
 }

@@ -9,17 +9,25 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import type {GlobalStateType} from '../../app/reducer';
 import style from './style.scss';
+import type {ServerCellDataType} from './api';
 import {getCellListState, symbolMap} from './api';
-import type {ServerCellDataType, SymbolType} from './api';
-import Queue from '../../lib/queue';
-import {getWinner, isAllCellFilled, isWinCell} from './helper';
+import {getWinner, isAllCellFilled, isWinCell, readFileFromInput} from './helper';
 import Button from '@material-ui/core/Button';
 import Locale from '../locale/c-locale';
 import Cell from './cell/c-cell';
+import type {AuthType, UserType} from '../auth/reducer';
+import type {SetUserType} from '../auth/action';
+import {setUser} from '../auth/action';
 
-type ReduxPropsType = {};
+const WavesAPI = require('waves-api');
 
-type ReduxActionType = {};
+type ReduxPropsType = {|
+    +auth: AuthType
+|};
+
+type ReduxActionType = {|
+    +setUser: (userState: UserType) => SetUserType
+|};
 
 type PassedPropsType = {};
 
@@ -40,7 +48,7 @@ type StateType = {|
 |};
 
 const reduxAction: ReduxActionType = {
-    // setSmth // imported from actions
+    setUser
 };
 
 const serverListenPerion = 1e3;
@@ -203,19 +211,37 @@ class Game extends Component<ReduxPropsType, PassedPropsType, StateType> {
         const view = this;
         const {props, state} = view;
         const {isStarted, cellStateList, winCellList} = state;
+        const {auth, setUser: setUserAction} = props;
 
         if (!isStarted) {
             return (
                 <div className={style.wrapper}>
                     <Button
-                        onClick={(): Promise<void> => view.startGame()}
-                        onKeyPress={(): Promise<void> => view.startGame()}
+                        // onClick={(): Promise<void> => view.startGame()}
+                        // onKeyPress={(): Promise<void> => view.startGame()}
                         variant="contained"
                         color="primary"
                         type="button"
                     >
                         <Locale stringKey="BUTTON__LOAD_FILE"/>
-                        <input className={style.input_file} type="file"/>
+                        <input
+                            onInput={(evt: SyntheticEvent<HTMLInputElement>) => {
+                                readFileFromInput(evt.currentTarget.files[0])
+                                    .then((text: string) => {
+                                        const Waves = WavesAPI.create(WavesAPI.TESTNET_CONFIG);
+                                        const seed = Waves.Seed.fromExistingPhrase(text);
+                                    })
+                                    .catch(
+                                        (error: Error): Error => {
+                                            console.error('can not read file');
+                                            console.error(error);
+                                            return error;
+                                        }
+                                    );
+                            }}
+                            className={style.input_file}
+                            type="file"
+                        />
                     </Button>
                 </div>
             );
@@ -238,7 +264,7 @@ class Game extends Component<ReduxPropsType, PassedPropsType, StateType> {
 
 export default connect(
     (state: GlobalStateType, props: PassedPropsType): ReduxPropsType => ({
-        // reduxProp: true
+        auth: state.auth
     }),
     reduxAction
 )(Game);
