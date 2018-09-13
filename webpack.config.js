@@ -1,5 +1,5 @@
 /* global process, __dirname */
-/* eslint no-process-env: 0, id-match: 0 */
+/* eslint no-process-env: 0, id-match: 0, optimize-regex/optimize-regex: 0 */
 const path = require('path');
 
 const webpack = require('webpack');
@@ -32,12 +32,12 @@ const definePluginParams = {
     // IS_DEVELOPMENT: JSON.stringify(IS_DEVELOPMENT)
 };
 
-const fileRegExp = /\.(png|jpg|jpeg|gif|svg|wof{2}|wof{2}2)(\?[\d&.=a-z]+)?$/;
+const fileRegExp = /\.(png|jpg|jpeg|gif|svg|woff2?)(\?[\d&.=a-z]+)?$/;
 
 const webpackConfig = {
     entry: [
         './www/css/root.scss',
-        './www/js/index.js'
+        './www/js/root.js'
     ],
     output: {
         path: path.join(CWD, '/dist'),
@@ -65,7 +65,7 @@ const webpackConfig = {
                             name: 'style',
                             priority: -20,
                             reuseExistingChunk: true,
-                            test: /\.scs{2}|\.cs{2}$/
+                            test: /\.s?css$/
                         },
                         image: {
                             chunks: 'initial',
@@ -107,7 +107,7 @@ const webpackConfig = {
                 // exclude: /node_modules/,
                 // query-string: query-string|strict-uri-encode
                 // pixi-viewport: pixi-viewport|yy-[\w]+
-                exclude: /node_modules(?!([/\\])(query-string|strict-uri-encode|pixi-viewport|y{2}-\w+))/,
+                exclude: /node_modules(?!([/\\])(query-string|strict-uri-encode|pixi-viewport|yy-\w+))/,
                 loader: 'babel-loader'
             },
             {
@@ -152,7 +152,7 @@ const webpackConfig = {
                 ]
             },
             {
-                test: /\.scs{2}$/,
+                test: /\.scss$/,
                 use: [
                     IS_PRODUCTION ?
                         MiniCssExtractPlugin.loader :
@@ -166,7 +166,7 @@ const webpackConfig = {
                                 }
                             }
                         },
-
+                    'css-modules-flow-types-loader',
                     {
                         loader: 'css-loader',
                         options: {
@@ -189,7 +189,7 @@ const webpackConfig = {
                 ]
             },
             {
-                test: /\.cs{2}$/,
+                test: /\.css$/,
                 use: [
                     IS_PRODUCTION ?
                         MiniCssExtractPlugin.loader :
@@ -203,7 +203,7 @@ const webpackConfig = {
                                 }
                             }
                         },
-
+                    'css-modules-flow-types-loader',
                     {
                         loader: 'css-loader',
                         options: {

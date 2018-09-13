@@ -12,3 +12,7 @@ package-lock.json
 
 # dist
 /dist
+
+# flow css
+*.css.flow
+*.scss.flow

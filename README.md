@@ -1,10 +1,13 @@
 ## Installation:
 
-### Install libpng-dev for pngquant:
+### Install libpng-dev for pngquant (need for webpack):
 > $ [sudo] apt-get install --no-install-recommends gcc make libpng-dev
 
 ### Install other npm modules:
 > $ npm i
+
+### Build app:
+> $ npm run build
 
 ### Other
 
@@ -26,5 +29,3 @@ Add in your index.html
 ```HTML
 <script src="http://172.21.1.215:8080/target/target-script-min.js#anonymous"></script>
 ```
-
-### react-hot-loader need for react-mt-svg-lines only

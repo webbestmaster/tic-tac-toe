@@ -32,6 +32,7 @@
         "optimize-regex",
         "unicorn",
         "no-loops",
+        "filenames",
         "markdown"
     ],
     "env": {
@@ -45,6 +46,7 @@
         }
     },
     "rules": {
+        "filenames/no-index": 2,
         "import/no-useless-path-segments": 2,
         "no-loops/no-loops": 2,
         "optimize-regex/optimize-regex": 1,
