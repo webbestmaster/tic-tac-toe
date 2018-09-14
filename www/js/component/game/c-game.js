@@ -275,7 +275,7 @@ async function makeTest(text: string): Promise<void> {
     const data = [
         {
             key: 'cell1',
-            value: 1,
+            value: 10,
             type: 'integer'
         },
         {
@@ -300,7 +300,6 @@ async function makeTest(text: string): Promise<void> {
 
     dataTx.addProof(seed.keyPair.privateKey);
 
-    // send Data Transction to the network
     const dataTxJSON = await dataTx.getJSON();
     const dataTxResult35 = await Waves.API.Node.transactions.rawBroadcast(dataTxJSON);
 
